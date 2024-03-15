@@ -2,28 +2,32 @@ import "dotenv/config";
 import fetch from "node-fetch";
 import bot from "./bot.js";
 
-
-// to greet people
-let helo = new RegExp('hello');
-
-bot.onText(helo, (msg) => {
-    bot.sendMessage(msg.chat.id, 'hello');
-})
-
-
-// to get dad jokes
-let joke = new RegExp('/dadjoke');
-let option = {
-    headers: {
-        'Accept': 'application/json'
-    }
+function sendMsg(regex, msg2){
+    bot.onText(regex, (msg) => {
+        bot.sendMessage(msg.chat.id, msg2)
+    })
 }
 
-bot.onText(joke, (msg) => {
-    fetch('https://icanhazdadjoke.com/', option)
-    .then(res => res.json())
-    .then(data => bot.sendMessage(msg.chat.id, data.joke))
-    .catch(err => bot.sendMessage(msg.chat.id, err.msg));
-})
+function fetchMsg(regex, options, link, arg){
+    bot.onText(regex, (msg) => {
+        fetch(link, options)
+        .then(res => res.json())
+        .then(dt => {
+            for (let i in arg){
+                bot.sendMessage(msg.chat.id, dt[arg[i]])
+            }
+        })
+        .catch(err => bot.sendMessage(msg.chat.id, err.msg))
+    })
+}
 
-export default bot;
+function sendImg(regex, options, link, arg, arg2){
+    bot.onText(regex, (msg) => {
+        fetch(link, options)
+        .then(res => res.json())
+        .then(dt => bot.sendPhoto(msg.chat.id, dt[arg][arg2]))
+        .catch(err => bot.sendMessage(msg.chat.id, err.msg))
+    })
+}
+
+export {sendMsg, fetchMsg, sendImg};
