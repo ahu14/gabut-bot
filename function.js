@@ -21,13 +21,4 @@ function fetchMsg(regex, options, link, arg){
     })
 }
 
-function sendImg(regex, options, link, arg, arg2){
-    bot.onText(regex, (msg) => {
-        fetch(link, options)
-        .then(res => res.json())
-        .then(dt => bot.sendPhoto(msg.chat.id, dt[arg][arg2]))
-        .catch(err => bot.sendMessage(msg.chat.id, err.msg))
-    })
-}
-
-export {sendMsg, fetchMsg, sendImg};
+export {sendMsg, fetchMsg};
